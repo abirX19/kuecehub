@@ -1,0 +1,335 @@
+/* ---------------------------------------------------------------
+   Tokens
+   --------------------------------------------------------------- */
+:root {
+  --paper: #f5f4ef;
+  --paper-line: rgba(30, 42, 50, 0.07);
+  --ink: #1e2a32;
+  --ink-soft: #4c5964;
+  --copper: #b5651d;
+  --copper-deep: #8f4e17;
+  --teal: #2f6b63;
+  --tab-grey: #6b7280;
+  --tab-grey-soft: #dfe1e4;
+  --card: #fcfbf8;
+  --border: rgba(30, 42, 50, 0.14);
+  --radius: 3px;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image:
+    repeating-linear-gradient(var(--paper-line) 0 1px, transparent 1px 32px),
+    repeating-linear-gradient(90deg, var(--paper-line) 0 1px, transparent 1px 32px);
+  min-height: 100vh;
+}
+
+a { color: inherit; }
+
+/* ---------------------------------------------------------------
+   Skip link / focus
+   --------------------------------------------------------------- */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.6em 1em;
+  z-index: 100;
+}
+.skip-link:focus { left: 0; }
+
+:focus-visible {
+  outline: 2px solid var(--copper);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------
+   Header
+   --------------------------------------------------------------- */
+.site-header {
+  border-bottom: 2px solid var(--ink);
+  padding: 28px 24px 20px;
+}
+
+.site-header__inner {
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.site-title {
+  font-family: var(--mono);
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.site-title a { text-decoration: none; }
+
+.site-title small {
+  display: block;
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 0.62em;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+
+.crumb-trail {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.crumb-trail a { text-decoration: none; border-bottom: 1px solid var(--border); }
+.crumb-trail a:hover { border-color: var(--copper); color: var(--copper-deep); }
+.crumb-trail .sep { margin: 0 6px; color: var(--border); }
+
+/* ---------------------------------------------------------------
+   Layout shell
+   --------------------------------------------------------------- */
+main {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.view-title {
+  font-family: var(--mono);
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  margin: 0 0 6px;
+}
+
+.view-sub {
+  color: var(--ink-soft);
+  margin: 0 0 32px;
+  max-width: 56ch;
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------
+   Home — year/term index, styled after the curriculum book's
+   page tabs
+   --------------------------------------------------------------- */
+.term-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.year-label {
+  grid-column: 1 / -1;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--tab-grey);
+  margin: 22px 0 -4px;
+  border-top: 1px dashed var(--border);
+  padding-top: 14px;
+}
+
+.year-label:first-of-type { margin-top: 0; border-top: none; padding-top: 0; }
+
+.term-card {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  background: var(--card);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--ink);
+  overflow: hidden;
+  min-height: 92px;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.term-card:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.term-card__tab {
+  flex: 0 0 46px;
+  background: var(--tab-grey);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  letter-spacing: 0.02em;
+}
+
+.term-card__body {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.term-card__label {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 1.02rem;
+}
+
+.term-card__count {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+/* Empty / not-yet terms */
+.term-card--empty {
+  border-style: dashed;
+  border-color: var(--border);
+  background: transparent;
+  cursor: default;
+  pointer-events: none;
+}
+
+.term-card--empty .term-card__tab {
+  background: var(--tab-grey-soft);
+  color: var(--tab-grey);
+}
+
+.term-card--empty .term-card__label { color: var(--ink-soft); }
+.term-card--empty .term-card__count { font-style: italic; }
+
+/* ---------------------------------------------------------------
+   Term view — course list
+   --------------------------------------------------------------- */
+.course-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--ink);
+}
+
+.course-row {
+  display: grid;
+  grid-template-columns: 190px 1fr 24px;
+  gap: 18px;
+  align-items: center;
+  padding: 15px 6px;
+  text-decoration: none;
+  color: var(--ink);
+  border-bottom: 1px solid var(--border);
+  transition: background-color 120ms ease;
+}
+
+.course-row:hover { background-color: rgba(181, 101, 29, 0.07); }
+
+.course-row--empty {
+  color: var(--ink-soft);
+  cursor: default;
+  grid-template-columns: 190px 1fr auto;
+}
+.course-row--empty:hover { background-color: transparent; }
+.course-row--empty .course-row__code { opacity: 0.6; }
+
+.course-row__arrow--pending {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--tab-grey);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.course-row__code {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--teal);
+  white-space: nowrap;
+}
+
+.course-row__title { font-weight: 500; }
+
+.course-row__arrow {
+  font-family: var(--mono);
+  color: var(--copper);
+  text-align: right;
+}
+
+.empty-state {
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 32px 24px;
+  color: var(--ink-soft);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.course-list__divider {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--tab-grey);
+  padding: 14px 6px 6px;
+}
+
+.course-row--extra .course-row__code {
+  color: var(--copper-deep);
+}
+
+.course-row--extra .course-row__title {
+  font-style: italic;
+}
+
+/* ---------------------------------------------------------------
+   Course view — resource table
+   --------------------------------------------------------------- */
+.course-code-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--teal);
+  border: 1px solid var(--teal);
+  border-radius: var(--radius);
+  padding: 2px 8px;
+  margin-bottom: 12px;
+}
+
+/* ---------------------------------------------------------------
+   Footer
+   --------------------------------------------------------------- */
+.site-footer {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 20px 24px 60px;
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  border-top: 1px dashed var(--border);
+}
+
+/* ---------------------------------------------------------------
+   Responsive
+   --------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .term-grid { grid-template-columns: 1fr; }
+  .course-row { grid-template-columns: 1fr 20px; }
+  .course-row__code { grid-column: 1 / -1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .term-card { transition: none; }
+}
